@@ -1,0 +1,71 @@
+def get_text():
+    print("выбор способа ввода:")
+    print("1 - с клавиатуры")
+    print("2 - из файла")
+    choice = input("введите 1 или 2: ").strip()
+
+    if choice == '1':
+        text = input("\nвведите строку: ").strip()
+        if not text:
+            print("строка не может быть пустой")
+            return None
+        return text
+
+    elif choice == '2':
+        filename = 'example.txt'
+        try:
+            with open(filename, 'r', encoding='utf-8') as f:
+                text = f.read().strip()
+            if not text:
+                print("файл пуст")
+                return None
+            return text
+        except FileNotFoundError:
+            print(f"файл '{filename}' не найден")
+            return None
+        except Exception as e:
+            print(f"ошибка при чтении файла: {e}")
+            return None
+    else:
+        print("неверный выбор")
+        return None
+
+def sort_words(text):
+    words = []
+    current_word = ''
+
+    # проходим по каждому символу в тексте
+    for char in text:
+        if char.isalpha():  # если символ буква добавляем к текущему слову
+            current_word += char
+        else:  # если символ не буква завершаем слово
+            if current_word:  # если слово не пустое добавляем его в список
+                words.append(current_word)
+                current_word = ''  # очищаем буфер для следующего слова
+
+    # добавляем последнее слово если оно есть
+    if current_word:
+        words.append(current_word)
+
+    # сортируем слова по длине
+    sorted_words = sorted(words, key=len)
+    return sorted_words
+
+if __name__ == "__main__":
+    # получаем текст
+    text = get_text()
+    if text is None:
+        print("завершение программы из за ошибки ввода")
+    else:
+        print(f"\nисходная строка: '{text}'")
+
+        # сортируем слова
+        result = sort_words(text)
+
+        # выводим результат
+        print("\nотсортированные слова:")
+        if result:
+            for i, word in enumerate(result, start=1):
+                print(f"{i}. '{word}'")
+        else:
+            print("в строке не найдено слов")
